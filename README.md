@@ -1,4 +1,4 @@
-# whill_ros2-humble_ubuntu22.04
+# whill_humble
 ## 1. WHILLの電動車いす制御
 [WHILL Model C](https://whill.inc/jp/model-c)
 
