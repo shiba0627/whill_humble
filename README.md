@@ -79,6 +79,20 @@ ros2 run ros2_whill whill_modelc_publisher
 ros2 run ros2_whill whill_modelc_controller
 ros2 topic list
 ```
+### vimコマンド集
+|key|内容|
+|---|---|
+|ZZ|上書き保存し終了|
+|:w|内容を保存|
+|:q!|保存せずに終了|
+|i|挿入モード|
+|o|新しい行を追加し挿入モード|
+|R|上書きモードへ|
+|v|ビジュアルモード|
+|ESC|コマンドモードへ|
+|ctrl + z|vimを一時停止|
+
+
 ### その他
 ```bash
 #ディレクトリ構造を表示
