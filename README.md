@@ -51,9 +51,10 @@ source /opt/ros/humble/setup.bash    #ターミナル起動のたび、毎回唱
 ### コンパイルなど
 ```bash
 source install/local_setup.bash
-colcon build --cmake-args '-DCMAKE_BUILD_TYPE=Release'#ビルド最適化モードでビルド
+rosdep install -i --from-path src --rosdistro humble -y #依存関係の解決
+colcon build --cmake-args '-DCMAKE_BUILD_TYPE=Release' #ビルド最適化モードでビルド
 ```
-### パッケージインストール
+### git設定
 ```bash
 sudo apt install git
 sudo apt install xclip
@@ -67,17 +68,63 @@ colcon build --cmake-args '-DCMAKE_BUILD_TYPE=Release'
 ### ソース設定
 ```bash
 #bashrcに書いておくと便利
-cat ~/.bashrc#確認
-vim ~/.bashrc#編集
+cat ~/.bashrc #確認
+vim ~/.bashrc #編集
 source install/setup.bash
 source install/local_setup.bash
 source /opt/ros/humble/setup.bash    #ターミナル起動のたび、毎回唱える呪文
 ```
 ### ノード起動
 ```bash
+source install/setup.bash
 ros2 run ros2_whill whill_modelc_publisher
 ros2 run ros2_whill whill_modelc_controller
 ros2 topic list
+ros2 run read_joy_package read_joy_node
+```
+### ROS2パッケージ作成
+```bash
+#python
+ros2 pkg create --build-type ament_python --license Apache-2.0 <package_name>
+cd src
+ros2 pkg create --build-type ament_python --license Apache-2.0 --node-name node package
+#実行するときは
+ros2 run package node
+#ビルド
+colcon build --packages-select read_joy_package
+source install/setup.bash #ビルド後にも.
+
+```
+### setup.pyの設定例
+```python
+#package.xmlと一致させる
+from setuptools import find_packages, setup
+
+package_name = 'read_joy_package'
+
+setup(
+    name=package_name,
+    version='0.0.0',
+    packages=find_packages(exclude=['test']),
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+    ],
+    install_requires=['setuptools'],
+    zip_safe=True,
+    maintainer='nakajima',
+    maintainer_email='1e8ec3@gmail.com',
+    description='TODO: Package description',
+    license='Apache-2.0',
+    tests_require=['pytest'],
+    entry_points={
+        'console_scripts': [
+            'read_joy_node = read_joy_package.read_joy_node:main'
+        ],
+    },
+)
+
 ```
 ### vimコマンド
 |key|内容|
@@ -98,13 +145,16 @@ ros2 topic list
 ### gitコマンド
 |key|内容|
 |-|-|
-|git add file|fileをステージエリアに追加|
-|git commit -m 'コメント'|ステージングをコミット|
-|git push|リモートリポジトリに反映|
+|1. git add file|fileをステージエリアに追加|
+|2. git commit -m 'コメント'|ステージングをコミット|
+|3. git push|リモートリポジトリに反映|
 ### その他
 ```bash
 #ディレクトリ構造を表示
 tree -L 2 #階層指定2
 #シリアルポートアクセス許可
 sudo usermod -a -G dialout $USER
+rm -r ディレクトリ名 #ディレクトリ削除
+ros2 topic echo /whill/controller/joy #topicを表示
+
 ```
